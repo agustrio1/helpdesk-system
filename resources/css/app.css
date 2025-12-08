@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+/* Custom Styles */
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+/* Quill Editor Customization */
+.ql-toolbar {
+  @apply border border-gray-300 rounded-t-lg bg-white;
+}
+
+.ql-container {
+  @apply border border-gray-300 rounded-b-lg bg-white;
+  min-height: 150px;
+}
+
+.ql-editor {
+  @apply text-gray-700;
+  min-height: 150px;
+}
+
+.ql-editor.ql-blank::before {
+  @apply text-gray-400 italic;
+}
+
+/* Alert Animations */
+.alert-enter {
+  animation: slideIn 0.3s ease-out;
+}
+
+.alert-exit {
+  animation: slideOut 0.3s ease-in;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #3b82f6;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

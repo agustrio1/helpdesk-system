@@ -1,0 +1,41 @@
+{
+    "name": "helpdesk/ticketing-system",
+    "description": "Professional Helpdesk Ticketing",
+    "version": "1.0.0",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Trio Agus Susanto"
+        }
+    ],
+    "scripts": {
+        "index": [
+            "php public/index.php"
+        ],
+        "serve": [
+            "php serve.php"
+        ],
+        "kill": [
+            "bash kill-server.sh"
+        ],
+        "migrate": [
+            "php database/migrations/migrate.php",
+            "php database/migrations/migrate-phase1.php"
+        ]
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.3",
+        "vlucas/phpdotenv": "^5.6",
+        "phpmailer/phpmailer": "^7.0"
+    },
+    "bin": [
+        "bin/helpdesk"
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\": "database/"
+        }
+    }
+}
