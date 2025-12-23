@@ -138,12 +138,14 @@ class EmailService {
      */
     private function sendEmail($to, $toName, $subject, $body)
 {
-    $payload = [
-        'from' => $_ENV['MAIL_FROM_NAME'] . ' <' . $_ENV['MAIL_FROM_ADDRESS'] . '>',
-        'to' => [$to],
-        'subject' => $subject,
-        'html' => $body,
-    ];
+    $subject = trim(preg_replace('/\s+/', ' ', $subject));
+
+      $payload = [
+          'from' => 'helpdek@nexarostudio.com',
+          'to' => [$to],
+          'subject' => $subject,
+          'html' => $body,
+      ];
 
     $ch = curl_init('https://api.resend.com/emails');
 
@@ -155,21 +157,20 @@ class EmailService {
             'Content-Type: application/json',
         ],
         CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_TIMEOUT => 15,
+        CURLOPT_TIMEOUT => 20,
     ]);
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-    if (curl_errno($ch)) {
-        throw new \Exception('Resend CURL error: ' . curl_error($ch));
+    if ($response === false) {
+        throw new \Exception('CURL ERROR: ' . curl_error($ch));
     }
 
     curl_close($ch);
 
     if ($httpCode !== 200) {
-        error_log('RESEND ERROR: ' . $response);
-        throw new \Exception('Email gagal dikirim via Resend');
+        throw new \Exception("RESEND FAIL {$httpCode}: {$response}");
     }
 
     return true;
