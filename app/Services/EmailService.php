@@ -138,30 +138,55 @@ class EmailService {
      */
     private function sendEmail($to, $toName, $subject, $body) {
     $mail = new PHPMailer(true);
-
+    
     try {
-
-        $mail->isMail();
-
-        // Sender
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = $_ENV['MAIL_HOST'];
+        $mail->SMTPAuth = true;
+        $mail->Username = $_ENV['MAIL_USERNAME'];
+        $mail->Password = $_ENV['MAIL_PASSWORD'];
+        $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION']; // ssl atau tls
+        $mail->Port = (int)$_ENV['MAIL_PORT'];
+        
+        // Debug settings
+        $mail->SMTPDebug = 0; // Set ke 2 untuk troubleshooting
+        $mail->Debugoutput = function($str, $level) {
+            error_log("PHPMailer: $str");
+        };
+        
+        // Timeout & Keep-Alive
+        $mail->Timeout = 30;
+        $mail->SMTPKeepAlive = false; // Set false untuk shared hosting
+        
+        // Disable certificate verification (untuk testing)
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]
+        ];
+        
+        // Recipients
         $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
-
-        // Receiver
         $mail->addAddress($to, $toName);
-
+        
         // Content
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         $mail->Subject = $subject;
         $mail->Body = $body;
         $mail->AltBody = strip_tags($body);
-
+        
         $mail->send();
         return true;
-
-    } catch (\Exception $e) {
-        error_log('MAIL ERROR: ' . $mail->ErrorInfo);
-        throw new \Exception('Email gagal dikirim');
+        
+    } catch (Exception $e) {
+        // Log detailed error
+        error_log("Email send failed: " . $mail->ErrorInfo);
+        error_log("Exception: " . $e->getMessage());
+        throw new \Exception("Email could not be sent: {$mail->ErrorInfo}");
     }
 }
     
